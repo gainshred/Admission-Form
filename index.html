@@ -258,206 +258,51 @@ select:focus {
 
   </div>
 <script>
-const scriptURL =
-"https://script.google.com/macros/s/AKfycbwBGoN-HQDlHTkeUBq1lRYqaEStJyfEiElTX-3maxmiqq7wVPIBFYCir4onkT1wO6OHaw/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbwBGoN-HQDlHTkeUBq1lRYqaEStJyfEiElTX-3maxmiqq7wVPIBFYCir4onkT1wO6OHaw/exec";
 
-const form =
-document.getElementById("gainshredForm");
+const form = document.getElementById("gainshredForm");
 
-form.addEventListener(
-"submit",
-function(event) {
+form.addEventListener("submit", function(event) {
+  event.preventDefault();
 
-event.preventDefault();
+  const file = document.getElementById("photo").files[0];
 
-const file =
-document.getElementById("photo")
-.files[0];
+  if (!file) {
+    alert("Please upload your photo.");
+    return;
+  }
 
-if (!file) {
-alert("Please upload photo");
-return;
-}
+  const reader = new FileReader();
 
-const reader =
-new FileReader();
+  reader.onload = async function(e) {
+    const formData = new FormData();
 
-reader.onload =
-async function(e) {
+    formData.append("fullName", document.getElementById("name").value);
+    formData.append("contactNumber", document.getElementById("phone").value);
+    formData.append("email", document.getElementById("email").value);
+    formData.append("membershipPackage", document.getElementById("package").value);
+    formData.append("photoFileName", file.name);
+    formData.append("photoMimeType", file.type);
+    formData.append("photoData", e.target.result.split(",")[1]);
 
-const formData =
-new FormData();
+    try {
+      await fetch(scriptURL, {
+        method: "POST",
+        mode: "no-cors",
+        body: formData
+      });
 
-formData.append(
-"fullName",
-document.getElementById("name").value
-);
+      alert("Thank you for choosing GainShred as your fitness partner. Your registration has been submitted successfully.");
 
-formData.append(
-"contactNumber",
-document.getElementById("phone").value
-);
+      form.reset();
 
-formData.append(
-"email",
-document.getElementById("email").value
-);
+    } catch (error) {
+      alert("Submission failed. Please try again.");
+      console.log(error);
+    }
+  };
 
-formData.append(
-"membershipPackage",
-document.getElementById("package").value
-);
-
-formData.append(
-"photoFileName",
-file.name
-);
-
-formData.append(
-"photoMimeType",
-file.type
-);
-
-formData.append(
-"photoData",
-e.target.result.split(",")[1]
-);
-
-try {
-
-const response =
-await fetch(scriptURL, {
-method: "POST",
-body: formData
-});
-
-const data =
-await response.json();
-
-const regNo =
-data.regNo;
-
-const doj =
-data.doj;
-
-const name =
-document.getElementById("name").value;
-
-const membership =
-document.getElementById("package").value;
-
-const canvas =
-document.createElement("canvas");
-
-canvas.width = 900;
-canvas.height = 520;
-
-const ctx =
-canvas.getContext("2d");
-
-const card =
-new Image();
-
-card.src =
-"membership-card.png";
-
-card.onload =
-async function() {
-
-ctx.drawImage(
-card,
-0,
-0,
-900,
-520
-);
-
-ctx.fillStyle =
-"#ffffff";
-
-ctx.font =
-"bold 28px Arial";
-
-ctx.fillText(
-regNo,
-580,
-155
-);
-
-ctx.fillText(
-name,
-580,
-235
-);
-
-ctx.fillText(
-membership,
-580,
-315
-);
-
-ctx.fillText(
-doj,
-580,
-390
-);
-
-const cardData =
-canvas
-.toDataURL("image/png")
-.split(",")[1];
-
-const cardFormData =
-new FormData();
-
-cardFormData.append(
-"fullName",
-name
-);
-
-cardFormData.append(
-"contactNumber",
-document.getElementById("phone").value
-);
-
-cardFormData.append(
-"email",
-document.getElementById("email").value
-);
-
-cardFormData.append(
-"membershipPackage",
-membership
-);
-
-cardFormData.append(
-"cardData",
-cardData
-);
-
-await fetch(scriptURL, {
-method: "POST",
-body: cardFormData
-});
-
-alert(
-"Admission submitted successfully!"
-);
-
-form.reset();
-};
-
-} catch(error) {
-
-alert(
-"Submission failed"
-);
-
-console.log(error);
-}
-};
-
-reader.readAsDataURL(file);
+  reader.readAsDataURL(file);
 });
 </script>
 
