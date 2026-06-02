@@ -258,51 +258,28 @@ select:focus {
 
   </div>
 <script>
-const scriptURL = "https://script.google.com/macros/s/AKfycbwBGoN-HQDlHTkeUBq1lRYqaEStJyfEiElTX-3maxmiqq7wVPIBFYCir4onkT1wO6OHaw/exec";
+const scriptURL = "PASTE_YOUR_NEW_WEB_APP_URL_HERE";
 
-const form = document.getElementById("gainshredForm");
-
-form.addEventListener("submit", function(event) {
+document.getElementById("gainshredForm").addEventListener("submit", function(event) {
   event.preventDefault();
 
   alert("Submitting your registration. Please wait.");
 
-  const file = document.getElementById("photo").files[0];
+  const formData = new FormData();
 
-  if (!file) {
-    alert("Please upload your photo.");
-    return;
-  }
+  formData.append("fullName", document.getElementById("name").value);
+  formData.append("contactNumber", document.getElementById("phone").value);
+  formData.append("email", document.getElementById("email").value);
+  formData.append("membershipPackage", document.getElementById("package").value);
 
-  const reader = new FileReader();
+  fetch(scriptURL, {
+    method: "POST",
+    mode: "no-cors",
+    body: formData
+  });
 
-  reader.onload = function(e) {
-    const formData = new FormData();
-
-    formData.append("fullName", document.getElementById("name").value);
-    formData.append("contactNumber", document.getElementById("phone").value);
-    formData.append("email", document.getElementById("email").value);
-    formData.append("membershipPackage", document.getElementById("package").value);
-    formData.append("photoFileName", file.name);
-    formData.append("photoMimeType", file.type);
-    formData.append("photoData", e.target.result.split(",")[1]);
-
-    fetch(scriptURL, {
-      method: "POST",
-      mode: "no-cors",
-      body: formData
-    })
-    .then(function() {
-      alert("Thank you for choosing GainShred as your fitness partner. Your registration has been submitted successfully.");
-      form.reset();
-    })
-    .catch(function(error) {
-      console.log(error);
-      alert("Submission failed. Please try again.");
-    });
-  };
-
-  reader.readAsDataURL(file);
+  alert("Thank you for choosing GainShred as your fitness partner. Your registration has been submitted successfully.");
+  document.getElementById("gainshredForm").reset();
 });
 </script>
 </body>
