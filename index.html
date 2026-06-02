@@ -258,28 +258,115 @@ select:focus {
 
   </div>
 <script>
-const scriptURL = "PASTE_YOUR_NEW_WEB_APP_URL_HERE";
+const scriptURL =
+"https://script.google.com/macros/s/AKfycbwBGoN-HQDlHTkeUBq1lRYqaEStJyfEiElTX-3maxmiqq7wVPIBFYCir4onkT1wO6OHaw/exec";
 
-document.getElementById("gainshredForm").addEventListener("submit", function(event) {
-  event.preventDefault();
+document
+.getElementById("gainshredForm")
+.addEventListener(
+"submit",
+async function(event) {
 
-  alert("Submitting your registration. Please wait.");
+event.preventDefault();
 
-  const formData = new FormData();
+const file =
+document.getElementById("photo")
+.files[0];
 
-  formData.append("fullName", document.getElementById("name").value);
-  formData.append("contactNumber", document.getElementById("phone").value);
-  formData.append("email", document.getElementById("email").value);
-  formData.append("membershipPackage", document.getElementById("package").value);
+if (!file) {
+alert("Please upload your photo.");
+return;
+}
 
-  fetch(scriptURL, {
-    method: "POST",
-    mode: "no-cors",
-    body: formData
-  });
+alert(
+"Submitting your registration. Please wait..."
+);
 
-  alert("Thank you for choosing GainShred as your fitness partner. Your registration has been submitted successfully.");
-  document.getElementById("gainshredForm").reset();
+const reader =
+new FileReader();
+
+reader.onload =
+async function(e) {
+
+const formData =
+new FormData();
+
+formData.append(
+"fullName",
+document.getElementById("name").value
+);
+
+formData.append(
+"contactNumber",
+document.getElementById("phone").value
+);
+
+formData.append(
+"email",
+document.getElementById("email").value
+);
+
+formData.append(
+"membershipPackage",
+document.getElementById("package").value
+);
+
+formData.append(
+"photoFileName",
+file.name
+);
+
+formData.append(
+"photoMimeType",
+file.type
+);
+
+formData.append(
+"photoData",
+e.target.result.split(",")[1]
+);
+
+try {
+
+const response =
+await fetch(scriptURL, {
+method: "POST",
+body: formData
+});
+
+const result =
+await response.text();
+
+if (
+result.includes("saved")
+) {
+
+alert(
+"Thank you for choosing GainShred as your fitness partner. Your registration has been submitted successfully."
+);
+
+document
+.getElementById("gainshredForm")
+.reset();
+
+} else {
+
+alert(
+"Something went wrong. Please try again."
+);
+}
+
+} catch(error) {
+
+console.log(error);
+
+alert(
+"Submission failed. Please try again."
+);
+}
+};
+
+reader.readAsDataURL(file);
 });
 </script>
 </body>
