@@ -201,12 +201,61 @@
     <div class="footer">Gainshred Fitness Club</div>
   </div>
 
-  <script>
-    document.getElementById("gainshredForm").addEventListener("submit", function(event) {
-      event.preventDefault();
-      document.getElementById("successMessage").style.display = "block";
-      this.reset();
-    });
-  </script>
+ ```html
+<script>
+const form =
+document.getElementById("gainshredForm");
+
+form.addEventListener(
+"submit",
+function(event) {
+
+event.preventDefault();
+
+const file =
+document.getElementById("photo")
+.files[0];
+
+const reader =
+new FileReader();
+
+reader.onload = function(e) {
+
+const formData = {
+fullName:
+document.getElementById("name").value,
+
+contactNumber:
+document.getElementById("phone").value,
+
+email:
+document.getElementById("email").value,
+
+photo: {
+fileName: file.name,
+mimeType: file.type,
+data:
+e.target.result.split(",")[1]
+}
+};
+
+google.script.run
+.withSuccessHandler(function(response){
+
+alert(response.message);
+
+form.reset();
+
+})
+.submitAdmission(formData);
+
+};
+
+reader.readAsDataURL(file);
+
+});
+</script>
+```
+
 </body>
 </html>
