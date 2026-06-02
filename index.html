@@ -210,66 +210,47 @@
 
   </div>
 
-  <script>
-    const form =
-      document.getElementById("gainshredForm");
+<script>
+const scriptURL = "https://script.google.com/macros/s/AKfycbwBGoN-HQDlHTkeUBq1lRYqaEStJyfEiElTX-3maxmiqq7wVPIBFYCir4onkT1wO6OHaw/exec";
 
-    form.addEventListener(
-      "submit",
-      function(event) {
+const form = document.getElementById("gainshredForm");
 
-        event.preventDefault();
+form.addEventListener("submit", function(event) {
+  event.preventDefault();
 
-        const file =
-          document.getElementById("photo")
-          .files[0];
+  const file = document.getElementById("photo").files[0];
 
-        if (!file) {
-          alert("Please upload your photo.");
-          return;
-        }
+  if (!file) {
+    alert("Please upload your photo.");
+    return;
+  }
 
-        const reader =
-          new FileReader();
+  const reader = new FileReader();
 
-        reader.onload =
-          function(e) {
+  reader.onload = function(e) {
+    const formData = new FormData();
 
-            const formData = {
+    formData.append("fullName", document.getElementById("name").value);
+    formData.append("contactNumber", document.getElementById("phone").value);
+    formData.append("email", document.getElementById("email").value);
 
-              fullName:
-                document.getElementById("name").value,
+    formData.append("photoFileName", file.name);
+    formData.append("photoMimeType", file.type);
+    formData.append("photoData", e.target.result.split(",")[1]);
 
-              contactNumber:
-                document.getElementById("phone").value,
+    fetch(scriptURL, {
+      method: "POST",
+      mode: "no-cors",
+      body: formData
+    });
 
-              email:
-                document.getElementById("email").value,
+    alert("Admission submitted successfully!");
+    form.reset();
+  };
 
-              photo: {
-                fileName: file.name,
-                mimeType: file.type,
-                data:
-                  e.target.result.split(",")[1]
-              }
-            };
-
-            google.script.run
-              .withSuccessHandler(
-                function(response) {
-
-                  alert(response.message);
-
-                  form.reset();
-                }
-              )
-              .submitAdmission(formData);
-          };
-
-        reader.readAsDataURL(file);
-      }
-    );
-  </script>
+  reader.readAsDataURL(file);
+});
+</script>
 
 </body>
 </html>
