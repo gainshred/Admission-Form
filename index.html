@@ -260,10 +260,10 @@ select:focus {
 <script>
 const scriptURL = "https://script.google.com/macros/s/AKfycbwBGoN-HQDlHTkeUBq1lRYqaEStJyfEiElTX-3maxmiqq7wVPIBFYCir4onkT1wO6OHaw/exec";
 
-const form = document.getElementById("gainshredForm");
-
-form.addEventListener("submit", function(event) {
+document.getElementById("gainshredForm").addEventListener("submit", function(event) {
   event.preventDefault();
+
+  alert("Submitting your GainShred registration...");
 
   const file = document.getElementById("photo").files[0];
 
@@ -274,7 +274,7 @@ form.addEventListener("submit", function(event) {
 
   const reader = new FileReader();
 
-  reader.onload = async function(e) {
+  reader.onload = function(e) {
     const formData = new FormData();
 
     formData.append("fullName", document.getElementById("name").value);
@@ -285,27 +285,20 @@ form.addEventListener("submit", function(event) {
     formData.append("photoMimeType", file.type);
     formData.append("photoData", e.target.result.split(",")[1]);
 
-    try {
-      await fetch(scriptURL, {
-        method: "POST",
-        mode: "no-cors",
-        body: formData
-      });
+    fetch(scriptURL, {
+      method: "POST",
+      mode: "no-cors",
+      body: formData
+    });
 
-      alert("Thank you for choosing GainShred as your fitness partner. Your registration has been submitted successfully.");
+    alert("Thank you for choosing GainShred as your fitness partner. Your registration has been submitted successfully.");
 
-      form.reset();
-
-    } catch (error) {
-      alert("Submission failed. Please try again.");
-      console.log(error);
-    }
+    document.getElementById("gainshredForm").reset();
   };
 
   reader.readAsDataURL(file);
 });
 </script>
-
 
 </body>
 </html>
