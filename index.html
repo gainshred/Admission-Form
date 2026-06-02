@@ -281,7 +281,7 @@ form.addEventListener("submit", function(event) {
     formData.append("fullName", document.getElementById("name").value);
     formData.append("contactNumber", document.getElementById("phone").value);
     formData.append("email", document.getElementById("email").value);
-
+    formData.append("membershipPackage", document.getElementById("package").value);
     formData.append("photoFileName", file.name);
     formData.append("photoMimeType", file.type);
     formData.append("photoData", e.target.result.split(",")[1]);
