@@ -260,10 +260,12 @@ select:focus {
 <script>
 const scriptURL = "https://script.google.com/macros/s/AKfycbwBGoN-HQDlHTkeUBq1lRYqaEStJyfEiElTX-3maxmiqq7wVPIBFYCir4onkT1wO6OHaw/exec";
 
-document.getElementById("gainshredForm").addEventListener("submit", function(event) {
+const form = document.getElementById("gainshredForm");
+
+form.addEventListener("submit", function(event) {
   event.preventDefault();
 
-  alert("Submitting your GainShred registration...");
+  alert("Submitting your registration. Please wait.");
 
   const file = document.getElementById("photo").files[0];
 
@@ -289,16 +291,19 @@ document.getElementById("gainshredForm").addEventListener("submit", function(eve
       method: "POST",
       mode: "no-cors",
       body: formData
+    })
+    .then(function() {
+      alert("Thank you for choosing GainShred as your fitness partner. Your registration has been submitted successfully.");
+      form.reset();
+    })
+    .catch(function(error) {
+      console.log(error);
+      alert("Submission failed. Please try again.");
     });
-
-    alert("Thank you for choosing GainShred as your fitness partner. Your registration has been submitted successfully.");
-
-    document.getElementById("gainshredForm").reset();
   };
 
   reader.readAsDataURL(file);
 });
 </script>
-
 </body>
 </html>
