@@ -272,20 +272,9 @@ const file =
 document.getElementById("photo")
 .files[0];
 
-if (!file) {
-alert("Please upload your photo.");
-return;
-}
-
 alert(
 "Submitting your registration. Please wait..."
 );
-
-const reader =
-new FileReader();
-
-reader.onload =
-async function(e) {
 
 const formData =
 new FormData();
@@ -310,6 +299,15 @@ formData.append(
 document.getElementById("package").value
 );
 
+// Upload photo only if selected
+if (file) {
+
+const reader =
+new FileReader();
+
+reader.onload =
+async function(e) {
+
 formData.append(
 "photoFileName",
 file.name
@@ -325,6 +323,17 @@ formData.append(
 e.target.result.split(",")[1]
 );
 
+submitForm(formData);
+};
+
+reader.readAsDataURL(file);
+
+} else {
+
+submitForm(formData);
+}
+
+async function submitForm(formData) {
 try {
 
 const response =
@@ -363,9 +372,7 @@ alert(
 "Submission failed. Please try again."
 );
 }
-};
-
-reader.readAsDataURL(file);
+}
 });
 </script>
 </body>
